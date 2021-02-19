@@ -43,6 +43,8 @@
 #include <limits.h>
 #include <setjmp.h>
 
+#include "uart.h"
+
 /* see setjmp.S
 void longjmp(jmp_buf env, int val)
 {
@@ -223,12 +225,11 @@ char *itoa(int value, char *str, int base)
 
 	__utoa(uvalue, &str[i], base);
 	return str;
-
 }
 
 
 /* gcc is allowed to insert calls to memcpy in a freestanding environment, but
- * sometimes discards this function despite being used... 
+ * sometimes discards this function despite being used...
  * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65199
  */
 __attribute__((used)) void *memcpy(void *dest, const void *src, size_t n)
@@ -264,24 +265,35 @@ int memcmp(const void *s1, const void *s2, size_t n)
 
 int getchar(void)
 {
-	/* TODO */
-	return 0;
+	int buffer = 0;
+	uart_read(UART_ID, &buffer, 1);
+	return buffer;
 }
 
 int putchar(int c)
 {
-	/* TODO */
-	return 0;
+	int buffer = c;
+	return uart_write(UART_ID, &buffer, 1);
 }
 
 int puts(const char *str)
 {
-	/* TODO */
+	/* TODO: send buffered */
+	char c;
+	do {
+		c = *str;
+		if (c == 0) {
+			putchar('\n');
+			break;
+		}
+		putchar(c);
+		str++;
+	} while (1);
 	return 0;
 }
+
 int fflush(int *stream)
 {
-	/* TODO */
 	return 0;
 }
 

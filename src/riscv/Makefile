@@ -1,6 +1,6 @@
 
 BIN	:= zforth
-SRC	:= main.c zforth.c libc.c
+SRC	:= main.c zforth.c libc.c udma.c
 
 IHX	:= $(BIN).ihx
 OBJS    := $(subst .c,.o, $(SRC))
@@ -11,7 +11,7 @@ CC	:= riscv32-unknown-elf-gcc
 ARCH    := -march=rv32imc -mabi=ilp32
 
 VPATH   := ../zforth
-CFLAGS	+= -I. -I../zforth
+CFLAGS	+= -I. -I../zforth -Iinclude/hal -Iinclude/archi -Iinclude
 
 CFLAGS	+= $(ARCH) -Os -g -MMD -ffunction-sections -fdata-sections -ffreestanding
 CFLAGS	+= -Wall -Wextra -Wno-unused-parameter -Wno-clobbered -Wno-unused-result
@@ -23,6 +23,8 @@ LDFLAGS	+= -T link.ld -g -Wl,--gc-sections -nostdlib -Wl,-Map,zforth.map $(ARCH)
 CFLAGS  += -flto
 LDFLAGS += -flto
 ASFLAGS += -flto
+
+all: $(IHX)
 
 $(IHX): $(BIN)
 #riscv32-unknown-elf-objcopy -j .text -j .data -O ihex $(BIN) $(IHX)

@@ -10,15 +10,17 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+#include "config.h"
+#include "uart.h"
+
 #include "zforth.h"
 
-#define UART_BAUD(baudrate)     ((F_CPU / baudrate) / 16 - 1)
 
 typedef int FILE;
 static int stdout;
 static int stdin;
 
-static void uart_init(uint16_t baudrate);
+static void uart_init(int baudrate);
 static int uart_tx(char c, FILE *f);
 static int uart_rx(FILE *);
 static FILE f;
@@ -94,24 +96,8 @@ zf_cell zf_host_parse_num(const char *buf)
 }
 
 
-void uart_init(uint16_t baudrate)
+void uart_init(int baudrate)
 {
+    uart_open(UART_ID, UART_BAUDRATE);
 }
-
-
-static int uart_tx(char c, FILE *f)
-{
-    return 0;
-}
-
-
-int uart_rx(FILE *f)
-{
-    return 0;
-}
-
-
-/*
- * End
- */
 
